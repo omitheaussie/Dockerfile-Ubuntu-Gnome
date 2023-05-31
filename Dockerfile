@@ -42,6 +42,12 @@ RUN apt-get update \
   && apt-get install -y tigervnc-common tigervnc-scraping-server tigervnc-standalone-server tigervnc-viewer tigervnc-xorg-extension \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
+  
+# Install and start ssh server
+RUN apt-get update \
+  && apt-get install --no-install-recommends -y openssh-server sudo
+RUN service ssh start
+
 # TODO fix PID problem: Type=forking would be best, but system daemon is run as root on startup
 #   ERROR tigervnc@:1.service: New main PID 233 does not belong to service, and PID file is not owned by root. Refusing.
 #   https://www.freedesktop.org/software/systemd/man/systemd.service.html#Type=
@@ -81,10 +87,14 @@ ENV USER="${USER}" \
 WORKDIR "/home/${USER}"
 
 # Set up VNC
+RUN touch /home/default/.Xauthority
+RUN chown default:default /home/default/.Xauthority
+RUN chmod 0600 /home/default/.Xauthority
 RUN mkdir -p $HOME/.vnc
 COPY xstartup $HOME/.vnc/xstartup
 RUN echo "acoman" | vncpasswd -f >> $HOME/.vnc/passwd && chmod 600 $HOME/.vnc/passwd
 
 # switch back to root to start systemd
 USER root
-
+RUN chmod +x /home/default/.vnc/xstartup
+RUN chown -R default:default /home/default/.vnc
