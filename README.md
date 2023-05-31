@@ -1,7 +1,7 @@
 ## Ubuntu Desktop (GNOME 3) Dockerfile
 
 
-This repository contains the *Dockerfile* and *associated files* for setting up a container with Ubuntu, GNOME 3, TigerVNC and noVNC.
+This repository contains the *Dockerfile* and *associated files* for setting up a container with Ubuntu 20.04, GNOME 3, TigerVNC and noVNC.
 
 * The VNC Server currently defaults to 1366*768 24bit.
 
